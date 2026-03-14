@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Presidential Elections 1789–2024</title>
+<meta name="description" content="Interactive explorer of all 59 US Presidential Elections from 1789 to 2024. Electoral votes, popular votes, turnout, and historical context.">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+
+  /* Party colors */
+  --dem: #1a3a5c;
+  --rep: #b2182b;
+  --dr: #2e7d32;
+  --fed: #5c4a8a;
+  --whig: #e8a735;
+  --prog: #7cb342;
+  --pop: #8d6e63;
+  --free-soil: #4db6ac;
+  --kn: #ff8f00;
+  --cu: #78909c;
+  --sr: #d84315;
+  --ai: #f9a825;
+  --reform: #7b1fa2;
+  --green: #388e3c;
+  --socialist: #c62828;
+  --ind: #607d8b;
+  --other: #78909c;
+  --unaffiliated: #546e7a;
+
+  /* Light mode */
+  --bg: #f5f5f0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafaf7;
+  --bg-timeline: #e8e8e3;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --border: #d5d5d0;
+  --border-light: #e8e8e3;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --progress-bg: #e8e8e3;
+  --bar-bg: #e0e0db;
+  --majority-line: #1a1a1a;
+  --era-bg: #e8e8e3;
+  --era-text: #555;
+  --kpi-label: #777;
+  --timeline-selected: rgba(0,0,0,0.15);
+}
+
+html.dark {
+  --bg: #0f1419;
+  --bg-card: #1c2530;
+  --bg-card-hover: #222d3a;
+  --bg-timeline: #161e28;
+  --text-primary: #e8e8e3;
+  --text-secondary: #a0a8b4;
+  --text-muted: #6b7685;
+  --border: #2a3544;
+  --border-light: #222d3a;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+  --progress-bg: #2a3544;
+  --bar-bg: #222d3a;
+  --majority-line: #e8e8e3;
+  --era-bg: #222d3a;
+  --era-text: #a0a8b4;
+  --kpi-label: #6b7685;
+  --timeline-selected: rgba(255,255,255,0.12);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+  transition: background 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  padding: 0 3rem;
+}
+.header .subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  letter-spacing: 0.15em;
+  font-variant-numeric: tabular-nums;
+}
+.theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.theme-toggle:hover { background: var(--bg-card-hover); }
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ===== NAVIGATION ===== */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0 0.75rem;
+  gap: 0.75rem;
+}
+.nav-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  transition: all 0.15s;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+.nav-btn:hover { background: var(--bg-card-hover); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.nav-btn:active { transform: translateY(0); }
+.nav-btn:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: var(--shadow); }
+
+.year-display {
+  text-align: center;
+  flex: 1;
+  min-width: 0;
+}
+.year-number {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.era-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--era-bg);
+  color: var(--era-text);
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  margin-top: 0.35rem;
+}
+.winner-summary {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+.winner-name-highlight {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ===== ELECTORAL BAR ===== */
+.ev-bar-section {
+  margin: 1rem 0 0.5rem;
+}
+.ev-bar-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.ev-bar-wrapper {
+  position: relative;
+  height: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bar-bg);
+  display: flex;
+}
+.ev-bar-segment {
+  height: 100%;
+  transition: width 0.5s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.ev-bar-segment span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 3px;
+}
+.majority-marker {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  background: var(--majority-line);
+  z-index: 10;
+  transition: left 0.5s ease;
+}
+.majority-marker::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Legend */
+.ev-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+.ev-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.ev-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.ev-legend-name {
+  color: var(--text-secondary);
+}
+.ev-legend-val {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== KPI CARDS ===== */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.kpi-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.kpi-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--kpi-label);
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+/* ===== CANDIDATE CARDS ===== */
+.candidates-section {
+  margin: 0.75rem 0;
+}
+.candidates-section h3 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.candidate-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.candidate-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--candidate-color, var(--other));
+}
+.candidate-card.winner { border-color: var(--candidate-color, var(--other)); }
+.candidate-card.winner::before { width: 5px; }
+
+.candidate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+.candidate-info { padding-left: 0.35rem; }
+.candidate-name {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.candidate-party {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.candidate-mate {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.winner-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--candidate-color, var(--other));
+  color: #fff;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+.candidate-stats {
+  padding-left: 0.35rem;
+}
+.stat-row {
+  margin-bottom: 0.35rem;
+}
+.stat-row:last-child { margin-bottom: 0; }
+.stat-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+.stat-label { color: var(--text-muted); font-weight: 500; }
+.stat-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+.progress-track {
+  height: 6px;
+  background: var(--progress-bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  background: var(--candidate-color, var(--other));
+}
+
+/* ===== CONTEXT NOTE ===== */
+.context-note {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  font-style: italic;
+}
+
+/* ===== TIMELINE ===== */
+.timeline-section {
+  margin: 1.5rem 0 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.timeline-section h3 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+.timeline-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.75rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.timeline-scroll::-webkit-scrollbar { height: 4px; }
+.timeline-scroll::-webkit-scrollbar-track { background: transparent; }
+.timeline-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.timeline-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  min-width: max-content;
+  padding: 0 0.25rem;
+  height: 80px;
+}
+.timeline-bar {
+  width: 14px;
+  min-height: 8px;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+.timeline-bar:hover {
+  opacity: 1;
+  transform: scaleX(1.3);
+}
+.timeline-bar.selected {
+  opacity: 1;
+  transform: scaleX(1.4);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+}
+.timeline-bar::after {
+  content: attr(data-year);
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: font-size 0.1s;
+}
+.timeline-bar:hover::after,
+.timeline-bar.selected::after {
+  font-size: 0.55rem;
+}
+/* Show decade labels */
+.timeline-bar.decade-mark::before {
+  content: attr(data-year);
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.timeline-bar.selected::before { display: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 1.5rem 1rem 2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+.footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+  transition: color 0.2s;
+}
+.footer a:hover { color: var(--text-secondary); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .timeline-bar { width: 11px; }
+  .nav-btn { width: 40px; height: 40px; }
+  .container { padding: 0 0.75rem; }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>US Presidential Elections</h1>
+  <div class="subtitle">1789 — 2024</div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☀️</button>
+</header>
+
+<div class="container">
+  <!-- Navigation -->
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn" aria-label="Previous election">◄</button>
+    <div class="year-display">
+      <div class="year-number" id="yearNumber"></div>
+      <div class="era-badge" id="eraBadge"></div>
+      <div class="winner-summary" id="winnerSummary"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn" aria-label="Next election">►</button>
+  </div>
+
+  <!-- Electoral Vote Bar -->
+  <div class="ev-bar-section">
+    <div class="ev-bar-label">Electoral Votes</div>
+    <div style="position:relative;">
+      <div class="ev-bar-wrapper" id="evBar"></div>
+      <div class="majority-marker" id="majorityMarker" data-label=""></div>
+    </div>
+    <div class="ev-legend" id="evLegend"></div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- Candidates -->
+  <div class="candidates-section">
+    <h3>Candidates</h3>
+    <div id="candidateCards"></div>
+  </div>
+
+  <!-- Context Note -->
+  <div class="context-note" id="contextNote"></div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <h3>All Elections · 1789–2024</h3>
+    <div class="timeline-scroll" id="timelineScroll">
+      <div class="timeline-inner" id="timelineInner"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+</footer>
+
+<script>
+// ===== ELECTION DATA =====
+const elections = [
+{year:1789,totalEV:69,candidates:[
+{name:"George Washington",party:"Unaffiliated",ev:69,mate:"John Adams",winner:true},
+{name:"John Adams",party:"Unaffiliated",ev:34},
+{name:"John Jay",party:"Unaffiliated",ev:9}
+],note:"First presidential election. Washington elected unanimously by the Electoral College.",era:"Founding Era"},
+
+{year:1792,totalEV:132,candidates:[
+{name:"George Washington",party:"Unaffiliated",ev:132,mate:"John Adams",winner:true},
+{name:"John Adams",party:"Federalist",ev:77},
+{name:"George Clinton",party:"Dem-Republican",ev:50}
+],note:"Washington again elected unanimously. Last uncontested presidential election.",era:"Founding Era"},
+
+{year:1796,totalEV:138,candidates:[
+{name:"John Adams",party:"Federalist",ev:71,mate:"Thomas Pinckney",winner:true},
+{name:"Thomas Jefferson",party:"Dem-Republican",ev:68}
+],note:"First contested presidential election. Runner-up Jefferson became Vice President.",era:"Founding Era"},
+
+{year:1800,totalEV:138,candidates:[
+{name:"Thomas Jefferson",party:"Dem-Republican",ev:73,mate:"Aaron Burr",winner:true},
+{name:"John Adams",party:"Federalist",ev:65},
+{name:"Aaron Burr",party:"Dem-Republican",ev:73}
+],note:"Electoral tie between Jefferson and Burr resolved by the House after 36 ballots. Led to the 12th Amendment.",era:"Founding Era"},
+
+{year:1804,totalEV:176,candidates:[
+{name:"Thomas Jefferson",party:"Dem-Republican",ev:162,mate:"George Clinton",winner:true},
+{name:"Charles C. Pinckney",party:"Federalist",ev:14}
+],note:"First election under the 12th Amendment. Jefferson won in a landslide.",era:"Founding Era"},
+
+{year:1808,totalEV:175,candidates:[
+{name:"James Madison",party:"Dem-Republican",ev:122,mate:"George Clinton",winner:true},
+{name:"Charles C. Pinckney",party:"Federalist",ev:47}
+],note:"Madison, the 'Father of the Constitution,' succeeded Jefferson.",era:"Founding Era"},
+
+{year:1812,totalEV:217,candidates:[
+{name:"James Madison",party:"Dem-Republican",ev:128,mate:"Elbridge Gerry",winner:true},
+{name:"DeWitt Clinton",party:"Federalist",ev:89}
+],note:"Held during the War of 1812. Madison won re-election despite wartime difficulties.",era:"Founding Era"},
+
+{year:1816,totalEV:217,candidates:[
+{name:"James Monroe",party:"Dem-Republican",ev:183,mate:"Daniel D. Tompkins",winner:true},
+{name:"Rufus King",party:"Federalist",ev:34}
+],note:"Last election in which the Federalist Party ran a candidate.",era:"Era of Good Feelings"},
+
+{year:1820,totalEV:232,candidates:[
+{name:"James Monroe",party:"Dem-Republican",ev:228,mate:"Daniel D. Tompkins",winner:true},
+{name:"John Quincy Adams",party:"Dem-Republican",ev:1}
+],note:"Era of Good Feelings. Monroe ran virtually unopposed, receiving all but one electoral vote.",era:"Era of Good Feelings"},
+
+{year:1824,totalEV:261,popTotal:365833,candidates:[
+{name:"John Quincy Adams",party:"Dem-Republican",ev:84,pop:113122,popPct:30.9,mate:"John C. Calhoun",winner:true},
+{name:"Andrew Jackson",party:"Dem-Republican",ev:99,pop:151271,popPct:41.4},
+{name:"William H. Crawford",party:"Dem-Republican",ev:41,pop:40856},
+{name:"Henry Clay",party:"Dem-Republican",ev:37,pop:47531}
+],note:"'Corrupt Bargain.' Jackson won the popular and electoral pluralities but no majority. House chose Adams after Clay's support.",era:"Jacksonian Era"},
+
+{year:1828,totalEV:261,popTotal:1148018,turnout:57.3,candidates:[
+{name:"Andrew Jackson",party:"Democratic",ev:178,pop:642553,popPct:56.0,mate:"John C. Calhoun",winner:true},
+{name:"John Quincy Adams",party:"National Republican",ev:83,pop:500897,popPct:43.6}
+],note:"Birth of the modern Democratic Party. Jackson won in a rematch landslide.",era:"Jacksonian Era"},
+
+{year:1832,totalEV:286,popTotal:1293973,turnout:55.4,candidates:[
+{name:"Andrew Jackson",party:"Democratic",ev:219,pop:701780,popPct:54.2,mate:"Martin Van Buren",winner:true},
+{name:"Henry Clay",party:"National Republican",ev:49,pop:484205,popPct:37.4},
+{name:"John Floyd",party:"Other",ev:11}
+],note:"Jackson won re-election. Major issue was his opposition to the Second Bank of the United States.",era:"Jacksonian Era"},
+
+{year:1836,totalEV:294,popTotal:1503534,turnout:57.8,candidates:[
+{name:"Martin Van Buren",party:"Democratic",ev:170,pop:764176,popPct:50.8,mate:"Richard M. Johnson",winner:true},
+{name:"William Henry Harrison",party:"Whig",ev:73,pop:549907,popPct:36.6},
+{name:"Hugh L. White",party:"Whig",ev:26}
+],note:"Van Buren, Jackson's chosen successor, won against a fragmented Whig field.",era:"Jacksonian Era"},
+
+{year:1840,totalEV:294,popTotal:2411808,turnout:80.2,candidates:[
+{name:"William Henry Harrison",party:"Whig",ev:234,pop:1275390,popPct:52.9,mate:"John Tyler",winner:true},
+{name:"Martin Van Buren",party:"Democratic",ev:60,pop:1128854,popPct:46.8}
+],note:"'Tippecanoe and Tyler Too.' Highest turnout to date. Harrison died 31 days into office.",era:"Antebellum"},
+
+{year:1844,totalEV:275,popTotal:2703659,turnout:78.9,candidates:[
+{name:"James K. Polk",party:"Democratic",ev:170,pop:1339494,popPct:49.5,mate:"George M. Dallas",winner:true},
+{name:"Henry Clay",party:"Whig",ev:105,pop:1300004,popPct:48.1}
+],note:"Dark horse Polk won on expansionism — annexation of Texas and Oregon.",era:"Antebellum"},
+
+{year:1848,totalEV:290,popTotal:2879184,turnout:72.7,candidates:[
+{name:"Zachary Taylor",party:"Whig",ev:163,pop:1361393,popPct:47.3,mate:"Millard Fillmore",winner:true},
+{name:"Lewis Cass",party:"Democratic",ev:127,pop:1223460,popPct:42.5},
+{name:"Martin Van Buren",party:"Free Soil",ev:0,pop:291501}
+],note:"War hero Taylor won. The Free Soil Party's debut foreshadowed the slavery crisis.",era:"Antebellum"},
+
+{year:1852,totalEV:296,popTotal:3161830,turnout:69.6,candidates:[
+{name:"Franklin Pierce",party:"Democratic",ev:254,pop:1607510,popPct:50.8,mate:"William R. King",winner:true},
+{name:"Winfield Scott",party:"Whig",ev:42,pop:1386942,popPct:43.9}
+],note:"Pierce's landslide. Last election won by the Whig Party's nominee (Scott lost badly).",era:"Antebellum"},
+
+{year:1856,totalEV:296,popTotal:4054647,turnout:78.9,candidates:[
+{name:"James Buchanan",party:"Democratic",ev:174,pop:1836072,popPct:45.3,mate:"John C. Breckinridge",winner:true},
+{name:"John C. Frémont",party:"Republican",ev:114,pop:1342345,popPct:33.1},
+{name:"Millard Fillmore",party:"Know-Nothing",ev:8,pop:873053,popPct:21.5}
+],note:"First Republican candidate (Frémont). Rising sectional tensions over slavery.",era:"Antebellum"},
+
+{year:1860,totalEV:303,popTotal:4685561,turnout:81.2,candidates:[
+{name:"Abraham Lincoln",party:"Republican",ev:180,pop:1865908,popPct:39.8,mate:"Hannibal Hamlin",winner:true},
+{name:"Stephen A. Douglas",party:"Dem-Northern",ev:12,pop:1380202,popPct:29.5},
+{name:"John C. Breckinridge",party:"Dem-Southern",ev:72,pop:848019,popPct:18.1},
+{name:"John Bell",party:"Constitutional Union",ev:39,pop:590901,popPct:12.6}
+],note:"Lincoln won with only 39.8% of the popular vote in a four-way race. Southern states began seceding.",era:"Civil War"},
+
+{year:1864,totalEV:233,popTotal:4031887,turnout:73.8,candidates:[
+{name:"Abraham Lincoln",party:"Republican",ev:212,pop:2218388,popPct:55.0,mate:"Andrew Johnson",winner:true},
+{name:"George B. McClellan",party:"Democratic",ev:21,pop:1812807,popPct:45.0}
+],note:"Election held during the Civil War. Confederate states did not participate.",era:"Civil War"},
+
+{year:1868,totalEV:294,popTotal:5722440,turnout:78.1,candidates:[
+{name:"Ulysses S. Grant",party:"Republican",ev:214,pop:3013650,popPct:52.7,mate:"Schuyler Colfax",winner:true},
+{name:"Horatio Seymour",party:"Democratic",ev:80,pop:2708744,popPct:47.3}
+],note:"First election of the Reconstruction era. Grant, the Union war hero, won decisively.",era:"Reconstruction"},
+
+{year:1872,totalEV:352,popTotal:6467679,turnout:71.3,candidates:[
+{name:"Ulysses S. Grant",party:"Republican",ev:286,pop:3598235,popPct:55.6,mate:"Henry Wilson",winner:true},
+{name:"Horace Greeley",party:"Democratic",ev:66,pop:2834761,popPct:43.8}
+],note:"Greeley died before electors voted; his electoral votes were split among others.",era:"Reconstruction"},
+
+{year:1876,totalEV:369,popTotal:8413101,turnout:81.8,candidates:[
+{name:"Rutherford B. Hayes",party:"Republican",ev:185,pop:4034311,popPct:47.9,mate:"William A. Wheeler",winner:true},
+{name:"Samuel J. Tilden",party:"Democratic",ev:184,pop:4288546,popPct:50.9}
+],note:"Most disputed election until 2000. Tilden won the popular vote; Hayes won by one electoral vote after a partisan commission.",era:"Gilded Age"},
+
+{year:1880,totalEV:369,popTotal:9210420,turnout:79.4,candidates:[
+{name:"James A. Garfield",party:"Republican",ev:214,pop:4454416,popPct:48.3,mate:"Chester A. Arthur",winner:true},
+{name:"Winfield S. Hancock",party:"Democratic",ev:155,pop:4444952,popPct:48.2}
+],note:"Closest popular vote margin in history — fewer than 10,000 votes separated the candidates.",era:"Gilded Age"},
+
+{year:1884,totalEV:401,popTotal:10049754,turnout:77.5,candidates:[
+{name:"Grover Cleveland",party:"Democratic",ev:219,pop:4914482,popPct:48.9,mate:"Thomas A. Hendricks",winner:true},
+{name:"James G. Blaine",party:"Republican",ev:182,pop:4856903,popPct:48.3}
+],note:"First Democratic president since before the Civil War. 'Ma, Ma, where's my Pa?'",era:"Gilded Age"},
+
+{year:1888,totalEV:401,popTotal:11383320,turnout:79.3,candidates:[
+{name:"Benjamin Harrison",party:"Republican",ev:233,pop:5443892,popPct:47.8,mate:"Levi P. Morton",winner:true},
+{name:"Grover Cleveland",party:"Democratic",ev:168,pop:5534488,popPct:48.6}
+],note:"Cleveland won the popular vote but lost the Electoral College — only the third time in history.",era:"Gilded Age"},
+
+{year:1892,totalEV:444,popTotal:12056097,turnout:74.7,candidates:[
+{name:"Grover Cleveland",party:"Democratic",ev:277,pop:5553898,popPct:46.1,mate:"Adlai Stevenson I",winner:true},
+{name:"Benjamin Harrison",party:"Republican",ev:145,pop:5190799,popPct:43.0},
+{name:"James B. Weaver",party:"Populist",ev:22,pop:1024280,popPct:8.5}
+],note:"Cleveland is the only president to serve non-consecutive terms. Populist Party made a strong showing.",era:"Gilded Age"},
+
+{year:1896,totalEV:447,popTotal:13935738,turnout:79.3,candidates:[
+{name:"William McKinley",party:"Republican",ev:271,pop:7111607,popPct:51.0,mate:"Garret Hobart",winner:true},
+{name:"William Jennings Bryan",party:"Democratic",ev:176,pop:6509052,popPct:46.7}
+],note:"McKinley's 'front porch campaign' defeated Bryan's populist 'Cross of Gold' crusade.",era:"Gilded Age"},
+
+{year:1900,totalEV:447,popTotal:13970036,turnout:73.2,candidates:[
+{name:"William McKinley",party:"Republican",ev:292,pop:7228864,popPct:51.6,mate:"Theodore Roosevelt",winner:true},
+{name:"William Jennings Bryan",party:"Democratic",ev:155,pop:6370932,popPct:45.5}
+],note:"McKinley won the rematch. His assassination in 1901 elevated Roosevelt to the presidency.",era:"Progressive Era"},
+
+{year:1904,totalEV:476,popTotal:13518964,turnout:65.4,candidates:[
+{name:"Theodore Roosevelt",party:"Republican",ev:336,pop:7630457,popPct:56.4,mate:"Charles W. Fairbanks",winner:true},
+{name:"Alton B. Parker",party:"Democratic",ev:140,pop:5083880,popPct:37.6}
+],note:"Roosevelt won in his own right with a commanding majority. Promised not to seek another term.",era:"Progressive Era"},
+
+{year:1908,totalEV:483,popTotal:14888442,turnout:65.4,candidates:[
+{name:"William Howard Taft",party:"Republican",ev:321,pop:7678395,popPct:51.6,mate:"James S. Sherman",winner:true},
+{name:"William Jennings Bryan",party:"Democratic",ev:162,pop:6408984,popPct:43.0}
+],note:"Roosevelt's handpicked successor. Bryan lost for the third and final time.",era:"Progressive Era"},
+
+{year:1912,totalEV:531,popTotal:15040963,turnout:58.8,candidates:[
+{name:"Woodrow Wilson",party:"Democratic",ev:435,pop:6296284,popPct:41.8,mate:"Thomas R. Marshall",winner:true},
+{name:"Theodore Roosevelt",party:"Progressive",ev:88,pop:4122721,popPct:27.4},
+{name:"William Howard Taft",party:"Republican",ev:8,pop:3486242,popPct:23.2},
+{name:"Eugene V. Debs",party:"Socialist",ev:0,pop:901551,popPct:6.0}
+],note:"Roosevelt's Bull Moose candidacy split the Republican vote, handing Wilson the presidency.",era:"Progressive Era"},
+
+{year:1916,totalEV:531,popTotal:18535022,turnout:61.6,candidates:[
+{name:"Woodrow Wilson",party:"Democratic",ev:277,pop:9126868,popPct:49.2,mate:"Thomas R. Marshall",winner:true},
+{name:"Charles Evans Hughes",party:"Republican",ev:254,pop:8548728,popPct:46.1}
+],note:"Wilson won re-election on the slogan 'He Kept Us Out of War.' The U.S. entered WWI months later.",era:"Progressive Era"},
+
+{year:1920,totalEV:531,popTotal:26768613,turnout:49.2,candidates:[
+{name:"Warren G. Harding",party:"Republican",ev:404,pop:16144093,popPct:60.3,mate:"Calvin Coolidge",winner:true},
+{name:"James M. Cox",party:"Democratic",ev:127,pop:9139661,popPct:34.1}
+],note:"First election in which women could vote nationwide (19th Amendment). Harding won by the largest popular vote margin to date.",era:"Roaring Twenties"},
+
+{year:1924,totalEV:531,popTotal:29095023,turnout:48.9,candidates:[
+{name:"Calvin Coolidge",party:"Republican",ev:382,pop:15723789,popPct:54.0,mate:"Charles G. Dawes",winner:true},
+{name:"John W. Davis",party:"Democratic",ev:136,pop:8386242,popPct:28.8},
+{name:"Robert M. La Follette",party:"Progressive",ev:13,pop:4831706,popPct:16.6}
+],note:"Coolidge won easily after assuming office upon Harding's death. La Follette ran a strong third-party campaign.",era:"Roaring Twenties"},
+
+{year:1928,totalEV:531,popTotal:36805951,turnout:56.9,candidates:[
+{name:"Herbert Hoover",party:"Republican",ev:444,pop:21427123,popPct:58.2,mate:"Charles Curtis",winner:true},
+{name:"Al Smith",party:"Democratic",ev:87,pop:15015464,popPct:40.8}
+],note:"Hoover won in a landslide. Smith was the first Catholic major-party nominee. The Great Depression would arrive a year later.",era:"Roaring Twenties"},
+
+{year:1932,totalEV:531,popTotal:39758759,turnout:56.9,candidates:[
+{name:"Franklin D. Roosevelt",party:"Democratic",ev:472,pop:22821277,popPct:57.4,mate:"John Nance Garner",winner:true},
+{name:"Herbert Hoover",party:"Republican",ev:59,pop:15761254,popPct:39.7}
+],note:"FDR's first landslide amid the Great Depression. Beginning of the New Deal era and Democratic dominance.",era:"New Deal"},
+
+{year:1936,totalEV:531,popTotal:45654763,turnout:61.0,candidates:[
+{name:"Franklin D. Roosevelt",party:"Democratic",ev:523,pop:27752648,popPct:60.8,mate:"John Nance Garner",winner:true},
+{name:"Alf Landon",party:"Republican",ev:8,pop:16681862,popPct:36.5}
+],note:"One of the most lopsided victories in history. Landon won only Maine and Vermont.",era:"New Deal"},
+
+{year:1940,totalEV:531,popTotal:49900418,turnout:62.5,candidates:[
+{name:"Franklin D. Roosevelt",party:"Democratic",ev:449,pop:27313945,popPct:54.7,mate:"Henry A. Wallace",winner:true},
+{name:"Wendell Willkie",party:"Republican",ev:82,pop:22347744,popPct:44.8}
+],note:"FDR broke the two-term tradition as war loomed in Europe. First and only third-term president.",era:"WWII"},
+
+{year:1944,totalEV:531,popTotal:47976670,turnout:55.9,candidates:[
+{name:"Franklin D. Roosevelt",party:"Democratic",ev:432,pop:25612916,popPct:53.4,mate:"Harry S. Truman",winner:true},
+{name:"Thomas E. Dewey",party:"Republican",ev:99,pop:22017929,popPct:45.9}
+],note:"FDR won an unprecedented fourth term during WWII. He died in April 1945; Truman became president.",era:"WWII"},
+
+{year:1948,totalEV:531,popTotal:48793826,turnout:53.0,candidates:[
+{name:"Harry S. Truman",party:"Democratic",ev:303,pop:24179347,popPct:49.6,mate:"Alben W. Barkley",winner:true},
+{name:"Thomas E. Dewey",party:"Republican",ev:189,pop:21991292,popPct:45.1},
+{name:"Strom Thurmond",party:"States' Rights",ev:39,pop:1175930,popPct:2.4}
+],note:"'Dewey Defeats Truman' — the greatest upset in presidential election history.",era:"Cold War"},
+
+{year:1952,totalEV:531,popTotal:61550918,turnout:63.3,candidates:[
+{name:"Dwight D. Eisenhower",party:"Republican",ev:442,pop:34075529,popPct:55.2,mate:"Richard Nixon",winner:true},
+{name:"Adlai Stevenson II",party:"Democratic",ev:89,pop:27375090,popPct:44.3}
+],note:"WWII hero Eisenhower won in a landslide. First Republican victory since 1928.",era:"Cold War"},
+
+{year:1956,totalEV:531,popTotal:62026908,turnout:60.6,candidates:[
+{name:"Dwight D. Eisenhower",party:"Republican",ev:457,pop:35579180,popPct:57.4,mate:"Richard Nixon",winner:true},
+{name:"Adlai Stevenson II",party:"Democratic",ev:73,pop:26028028,popPct:42.0}
+],note:"Eisenhower won re-election in another landslide, despite a heart attack the previous year.",era:"Cold War"},
+
+{year:1960,totalEV:537,popTotal:68838219,turnout:63.1,candidates:[
+{name:"John F. Kennedy",party:"Democratic",ev:303,pop:34220984,popPct:49.7,mate:"Lyndon B. Johnson",winner:true},
+{name:"Richard Nixon",party:"Republican",ev:219,pop:34108157,popPct:49.6}
+],note:"Closest popular vote since 1880. First Catholic president. First televised presidential debate.",era:"Cold War"},
+
+{year:1964,totalEV:538,popTotal:70644592,turnout:61.9,candidates:[
+{name:"Lyndon B. Johnson",party:"Democratic",ev:486,pop:43127041,popPct:61.1,mate:"Hubert Humphrey",winner:true},
+{name:"Barry Goldwater",party:"Republican",ev:52,pop:27175754,popPct:38.5}
+],note:"Johnson's Great Society landslide. Goldwater won only his home state and five Deep South states.",era:"Cold War"},
+
+{year:1968,totalEV:538,popTotal:73199998,turnout:60.8,candidates:[
+{name:"Richard Nixon",party:"Republican",ev:301,pop:31783783,popPct:43.4,mate:"Spiro Agnew",winner:true},
+{name:"Hubert Humphrey",party:"Democratic",ev:191,pop:31271839,popPct:42.7},
+{name:"George Wallace",party:"American Ind.",ev:46,pop:9901118,popPct:13.5}
+],note:"Vietnam War, assassinations of MLK and RFK. Nixon's 'Silent Majority' narrowly prevailed.",era:"Cold War"},
+
+{year:1972,totalEV:538,popTotal:77718554,turnout:55.2,candidates:[
+{name:"Richard Nixon",party:"Republican",ev:520,pop:47168710,popPct:60.7,mate:"Spiro Agnew",winner:true},
+{name:"George McGovern",party:"Democratic",ev:17,pop:29173222,popPct:37.5}
+],note:"Nixon's massive re-election landslide. He resigned two years later due to Watergate.",era:"Cold War"},
+
+{year:1976,totalEV:538,popTotal:81555889,turnout:53.6,candidates:[
+{name:"Jimmy Carter",party:"Democratic",ev:297,pop:40831881,popPct:50.1,mate:"Walter Mondale",winner:true},
+{name:"Gerald Ford",party:"Republican",ev:240,pop:39148634,popPct:48.0}
+],note:"Post-Watergate election. Carter defeated the unelected incumbent Ford in a close race.",era:"Cold War"},
+
+{year:1980,totalEV:538,popTotal:86515221,turnout:52.6,candidates:[
+{name:"Ronald Reagan",party:"Republican",ev:489,pop:43903230,popPct:50.7,mate:"George H.W. Bush",winner:true},
+{name:"Jimmy Carter",party:"Democratic",ev:49,pop:35480115,popPct:41.0},
+{name:"John B. Anderson",party:"Independent",ev:0,pop:5719850,popPct:6.6}
+],note:"Reagan Revolution. Carter hurt by Iran hostage crisis and stagflation. Reagan won 44 states.",era:"Cold War"},
+
+{year:1984,totalEV:538,popTotal:92652842,turnout:53.1,candidates:[
+{name:"Ronald Reagan",party:"Republican",ev:525,pop:54455472,popPct:58.8,mate:"George H.W. Bush",winner:true},
+{name:"Walter Mondale",party:"Democratic",ev:13,pop:37577352,popPct:40.6}
+],note:"Reagan's 'Morning in America' re-election. Mondale won only Minnesota and D.C.",era:"Cold War"},
+
+{year:1988,totalEV:538,popTotal:91594693,turnout:50.2,candidates:[
+{name:"George H.W. Bush",party:"Republican",ev:426,pop:48886597,popPct:53.4,mate:"Dan Quayle",winner:true},
+{name:"Michael Dukakis",party:"Democratic",ev:111,pop:41809074,popPct:45.6}
+],note:"Bush won Reagan's third term effectively. Willie Horton ad and tank photo defined the race.",era:"Cold War"},
+
+{year:1992,totalEV:538,popTotal:104425014,turnout:55.2,candidates:[
+{name:"Bill Clinton",party:"Democratic",ev:370,pop:44909806,popPct:43.0,mate:"Al Gore",winner:true},
+{name:"George H.W. Bush",party:"Republican",ev:168,pop:39104550,popPct:37.4},
+{name:"Ross Perot",party:"Independent",ev:0,pop:19743821,popPct:18.9}
+],note:"'It's the economy, stupid.' Clinton ended 12 years of Republican rule. Perot won 19% of the popular vote.",era:"Post-Cold War"},
+
+{year:1996,totalEV:538,popTotal:96277634,turnout:49.0,candidates:[
+{name:"Bill Clinton",party:"Democratic",ev:379,pop:47401185,popPct:49.2,mate:"Al Gore",winner:true},
+{name:"Bob Dole",party:"Republican",ev:159,pop:39197469,popPct:40.7},
+{name:"Ross Perot",party:"Reform",ev:0,pop:8085402,popPct:8.4}
+],note:"Clinton won re-election comfortably. Lowest turnout since 1924.",era:"Post-Cold War"},
+
+{year:2000,totalEV:538,popTotal:105405100,turnout:51.3,candidates:[
+{name:"George W. Bush",party:"Republican",ev:271,pop:50456002,popPct:47.9,mate:"Dick Cheney",winner:true},
+{name:"Al Gore",party:"Democratic",ev:266,pop:50999897,popPct:48.4},
+{name:"Ralph Nader",party:"Green",ev:0,pop:2882955,popPct:2.7}
+],note:"Most contested election in modern history. Gore won popular vote. Florida recount decided by Supreme Court (Bush v. Gore).",era:"Post-Cold War"},
+
+{year:2004,totalEV:538,popTotal:122294978,turnout:60.1,candidates:[
+{name:"George W. Bush",party:"Republican",ev:286,pop:62040610,popPct:50.7,mate:"Dick Cheney",winner:true},
+{name:"John Kerry",party:"Democratic",ev:251,pop:59028444,popPct:48.3}
+],note:"Post-9/11 wartime election. Bush won re-election; Ohio's result was decisive.",era:"Post-Cold War"},
+
+{year:2008,totalEV:538,popTotal:131313820,turnout:61.6,candidates:[
+{name:"Barack Obama",party:"Democratic",ev:365,pop:69498516,popPct:52.9,mate:"Joe Biden",winner:true},
+{name:"John McCain",party:"Republican",ev:173,pop:59948323,popPct:45.7}
+],note:"First African American president. Financial crisis context. Obama won with largest Dem margin since 1988.",era:"21st Century"},
+
+{year:2012,totalEV:538,popTotal:129085410,turnout:58.6,candidates:[
+{name:"Barack Obama",party:"Democratic",ev:332,pop:65915795,popPct:51.1,mate:"Joe Biden",winner:true},
+{name:"Mitt Romney",party:"Republican",ev:206,pop:60933504,popPct:47.2}
+],note:"Obama won re-election. First Democrat to win 50%+ twice since FDR.",era:"21st Century"},
+
+{year:2016,totalEV:538,popTotal:136669276,turnout:59.2,candidates:[
+{name:"Donald Trump",party:"Republican",ev:306,pop:62984828,popPct:46.1,mate:"Mike Pence",winner:true},
+{name:"Hillary Clinton",party:"Democratic",ev:227,pop:65853514,popPct:48.2}
+],note:"Trump's upset victory. Clinton won the popular vote by ~2.9M but lost the Electoral College.",era:"21st Century"},
+
+{year:2020,totalEV:538,popTotal:158429631,turnout:66.8,candidates:[
+{name:"Joe Biden",party:"Democratic",ev:306,pop:81268924,popPct:51.3,mate:"Kamala Harris",winner:true},
+{name:"Donald Trump",party:"Republican",ev:232,pop:74216154,popPct:46.8}
+],note:"Highest turnout since 1900. Biden flipped Wisconsin, Michigan, Pennsylvania, Georgia, and Arizona.",era:"21st Century"},
+
+{year:2024,totalEV:538,popTotal:155109819,turnout:63.9,candidates:[
+{name:"Donald Trump",party:"Republican",ev:312,pop:77284118,popPct:49.8,mate:"JD Vance",winner:true},
+{name:"Kamala Harris",party:"Democratic",ev:226,pop:75017413,popPct:48.4}
+],note:"Trump's historic return to power, becoming only the second non-consecutive president since Grover Cleveland.",era:"21st Century"}
+];
+
+// ===== PARTY COLOR MAP =====
+const partyColor = {
+  'Democratic': 'var(--dem)',
+  'Republican': 'var(--rep)',
+  'Dem-Republican': 'var(--dr)',
+  'Federalist': 'var(--fed)',
+  'National Republican': 'var(--fed)',
+  'Whig': 'var(--whig)',
+  'Progressive': 'var(--prog)',
+  'Bull Moose': 'var(--prog)',
+  'Populist': 'var(--pop)',
+  'Free Soil': 'var(--free-soil)',
+  'Know-Nothing': 'var(--kn)',
+  'Constitutional Union': 'var(--cu)',
+  'States\' Rights': 'var(--sr)',
+  'American Ind.': 'var(--ai)',
+  'Reform': 'var(--reform)',
+  'Green': 'var(--green)',
+  'Socialist': 'var(--socialist)',
+  'Independent': 'var(--ind)',
+  'Dem-Northern': 'var(--dem)',
+  'Dem-Southern': 'var(--sr)',
+  'Unaffiliated': 'var(--unaffiliated)',
+  'Other': 'var(--other)'
+};
+
+function getPartyColor(party) {
+  return partyColor[party] || 'var(--other)';
+}
+
+// ===== STATE =====
+let currentIndex = elections.length - 1; // Start at most recent
+
+// ===== DOM REFS =====
+const yearNumber = document.getElementById('yearNumber');
+const eraBadge = document.getElementById('eraBadge');
+const winnerSummary = document.getElementById('winnerSummary');
+const evBar = document.getElementById('evBar');
+const majorityMarker = document.getElementById('majorityMarker');
+const evLegend = document.getElementById('evLegend');
+const kpiRow = document.getElementById('kpiRow');
+const candidateCards = document.getElementById('candidateCards');
+const contextNote = document.getElementById('contextNote');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const timelineInner = document.getElementById('timelineInner');
+const themeToggle = document.getElementById('themeToggle');
+
+// ===== THEME =====
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+let isDark = prefersDark;
+if (isDark) document.documentElement.classList.add('dark');
+themeToggle.textContent = isDark ? '🌙' : '☀️';
+
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  document.documentElement.classList.toggle('dark', isDark);
+  themeToggle.textContent = isDark ? '🌙' : '☀️';
+});
+
+// ===== FORMAT HELPERS =====
+function fmtNum(n) {
+  if (!n && n !== 0) return '—';
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+  return n.toLocaleString();
+}
+function fmtPct(p) {
+  return p != null ? p.toFixed(1) + '%' : '—';
+}
+
+// ===== RENDER =====
+function render() {
+  const el = elections[currentIndex];
+  const winner = el.candidates.find(c => c.winner);
+
+  // Year & era
+  yearNumber.textContent = el.year;
+  eraBadge.textContent = el.era;
+
+  // Winner summary
+  winnerSummary.innerHTML = `<span class="winner-name-highlight">${winner.name}</span> (${winner.party}) won`;
+
+  // Nav buttons
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.disabled = currentIndex === elections.length - 1;
+
+  // Electoral bar
+  renderEVBar(el);
+
+  // KPI cards
+  renderKPIs(el, winner);
+
+  // Candidate cards
+  renderCandidates(el);
+
+  // Context note
+  contextNote.textContent = el.note;
+
+  // Timeline highlight
+  document.querySelectorAll('.timeline-bar').forEach((bar, i) => {
+    bar.classList.toggle('selected', i === currentIndex);
+  });
+
+  // Scroll timeline to show selected bar
+  const selectedBar = timelineInner.children[currentIndex];
+  if (selectedBar) {
+    const scroll = document.getElementById('timelineScroll');
+    const barLeft = selectedBar.offsetLeft;
+    const barWidth = selectedBar.offsetWidth;
+    const scrollWidth = scroll.offsetWidth;
+    scroll.scrollLeft = barLeft - scrollWidth / 2 + barWidth / 2;
+  }
+
+  // Fade in
+  [evBar, kpiRow, candidateCards, contextNote].forEach(el => {
+    el.classList.remove('fade-in');
+    void el.offsetWidth;
+    el.classList.add('fade-in');
+  });
+}
+
+function renderEVBar(el) {
+  evBar.innerHTML = '';
+  evLegend.innerHTML = '';
+
+  const totalEV = el.totalEV;
+  const majority = Math.floor(totalEV / 2) + 1;
+
+  // Sort candidates by EV descending
+  const sorted = [...el.candidates].sort((a, b) => (b.ev || 0) - (a.ev || 0));
+
+  sorted.forEach(c => {
+    if (!c.ev) return;
+    const pct = (c.ev / totalEV) * 100;
+    const color = getPartyColor(c.party);
+    const seg = document.createElement('div');
+    seg.className = 'ev-bar-segment';
+    seg.style.cssText = `width:${pct}%;background:${color};`;
+    seg.innerHTML = pct > 6 ? `<span>${c.ev}</span>` : '';
+    evBar.appendChild(seg);
+
+    // Legend item
+    const item = document.createElement('div');
+    item.className = 'ev-legend-item';
+    item.innerHTML = `
+      <div class="ev-legend-dot" style="background:${color}"></div>
+      <span class="ev-legend-name">${c.name.split(' ').pop()}</span>
+      <span class="ev-legend-val">${c.ev} EV</span>
+    `;
+    evLegend.appendChild(item);
+  });
+
+  // Majority marker
+  const markerPct = (majority / totalEV) * 100;
+  majorityMarker.style.left = markerPct + '%';
+  majorityMarker.setAttribute('data-label', majority + ' to win');
+}
+
+function renderKPIs(el, winner) {
+  const kpis = [];
+
+  kpis.push({ label: 'Total EV', value: el.totalEV });
+  kpis.push({ label: 'Winner EV', value: winner.ev });
+
+  if (el.popTotal) {
+    kpis.push({ label: 'Total Votes', value: fmtNum(el.popTotal) });
+  }
+  if (winner.pop) {
+    kpis.push({ label: 'Winner Votes', value: fmtNum(winner.pop) });
+  }
+  if (winner.popPct) {
+    kpis.push({ label: 'Winner %', value: fmtPct(winner.popPct) });
+  }
+  if (el.turnout) {
+    kpis.push({ label: 'Turnout', value: fmtPct(el.turnout) });
+  }
+
+  kpiRow.innerHTML = kpis.map(k => `
+    <div class="kpi-card">
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-label">${k.label}</div>
+    </div>
+  `).join('');
+}
+
+function renderCandidates(el) {
+  const sorted = [...el.candidates].sort((a, b) => (b.ev || 0) - (a.ev || 0));
+
+  candidateCards.innerHTML = sorted.map(c => {
+    const color = getPartyColor(c.party);
+    const evPct = el.totalEV ? (c.ev / el.totalEV * 100) : 0;
+    const popPct = c.popPct || 0;
+    const isWinner = c.winner;
+
+    return `
+    <div class="candidate-card ${isWinner ? 'winner' : ''}" style="--candidate-color:${color}">
+      <div class="candidate-header">
+        <div class="candidate-info">
+          <div class="candidate-name">${c.name}</div>
+          <div class="candidate-party">${c.party}</div>
+          ${c.mate ? `<div class="candidate-mate">Running mate: ${c.mate}</div>` : ''}
+        </div>
+        ${isWinner ? '<div class="winner-badge">Winner</div>' : ''}
+      </div>
+      <div class="candidate-stats">
+        <div class="stat-row">
+          <div class="stat-label-row">
+            <span class="stat-label">Electoral Votes</span>
+            <span class="stat-value">${c.ev != null ? c.ev : '—'}</span>
+          </div>
+          ${c.ev != null ? `<div class="progress-track"><div class="progress-fill" style="width:${evPct}%"></div></div>` : ''}
+        </div>
+        ${c.pop ? `
+        <div class="stat-row">
+          <div class="stat-label-row">
+            <span class="stat-label">Popular Votes</span>
+            <span class="stat-value">${c.pop.toLocaleString()}${c.popPct ? ' (' + c.popPct + '%)' : ''}</span>
+          </div>
+          ${popPct ? `<div class="progress-track"><div class="progress-fill" style="width:${popPct}%"></div></div>` : ''}
+        </div>` : ''}
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+// ===== NAVIGATION =====
+prevBtn.addEventListener('click', () => {
+  if (currentIndex > 0) { currentIndex--; render(); }
+});
+nextBtn.addEventListener('click', () => {
+  if (currentIndex < elections.length - 1) { currentIndex++; render(); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; render(); }
+  if (e.key === 'ArrowRight' && currentIndex < elections.length - 1) { currentIndex++; render(); }
+});
+
+// ===== TIMELINE =====
+function buildTimeline() {
+  const maxEV = Math.max(...elections.map(e => e.candidates.find(c=>c.winner)?.ev || 0));
+
+  elections.forEach((el, i) => {
+    const winner = el.candidates.find(c => c.winner);
+    const color = getPartyColor(winner?.party || 'Other');
+    const evH = winner?.ev ? Math.max(8, (winner.ev / maxEV) * 64) : 8;
+    const isDecade = el.year % 20 === 0;
+
+    const bar = document.createElement('div');
+    bar.className = 'timeline-bar' + (isDecade ? ' decade-mark' : '');
+    bar.style.cssText = `height:${evH}px;background:${color};`;
+    bar.setAttribute('data-year', el.year);
+    bar.setAttribute('title', `${el.year}: ${winner?.name}`);
+    bar.addEventListener('click', () => { currentIndex = i; render(); });
+    timelineInner.appendChild(bar);
+  });
+}
+
+buildTimeline();
+render();
+</script>
+</body>
+</html>
